@@ -1,3 +1,6 @@
+import sys
+sys.path.append('.')
+
 from utils.utils import norm_crop, estimate_norm, inverse_estimate_norm, transform_landmark_points, get_lm
 from networks.generator import get_generator
 import numpy as np
