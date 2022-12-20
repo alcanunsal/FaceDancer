@@ -15,10 +15,6 @@ from tensorflow.keras.models import load_model
 from networks.layers import AdaIN, AdaptiveAttention
 from tensorflow_addons.layers import InstanceNormalization
 from retinaface.models import *
-import logging
-logging.getLogger().setLevel(logging.ERROR)
-import tensorflow as tf
-tf.keras.utils.disable_interactive_logging()
 
 arcface_src = np.array(
     [[38.2946, 51.6963], [73.5318, 51.5014], [56.0252, 71.7366],
@@ -38,9 +34,9 @@ def swap(opt):
                                             "BboxHead": BboxHead,
                                             "LandmarkHead": LandmarkHead,
                                             "ClassHead": ClassHead})
-    ArcFace = load_model(opt.arcface_path, compile=False)
+    ArcFace = load_model(opt.arcface_path)
 
-    G = load_model(opt.facedancer_path, compile=False, custom_objects={"AdaIN": AdaIN,
+    G = load_model(opt.facedancer_path, custom_objects={"AdaIN": AdaIN,
                                                         "AdaptiveAttention": AdaptiveAttention,
                                                         "InstanceNormalization": InstanceNormalization})
     G.summary()
@@ -69,7 +65,7 @@ def swap(opt):
                                   (im_shape[0],
                                    im_shape[1]))
 
-    source = np.asarray(Image.open(opt.swap_source).convert('RGB').resize((256, 256)))
+    source = np.asarray(Image.open(opt.swap_source).convert('RGB'))
     source_h, source_w, _ = source.shape
     if opt.align_source:
         source_a = RetinaFace(np.expand_dims(source, axis=0)).numpy()[0]
@@ -113,7 +109,6 @@ def swap(opt):
             changed_face_cage = G.predict([np.expand_dims((im_aligned - 127.5) / 127.5, axis=0),
                                            source_z])
             changed_face = (changed_face_cage[0] + 1) / 2
-            changed_face = np.clip(changed_face * 255, 0, 255).astype('uint8')
 
             # get inverse transformation landmarks
             transformed_lmk = transform_landmark_points(M, lm_align)
