@@ -111,7 +111,7 @@ def swap(opt):
 
             # face swap
             changed_face_cage = G.predict([np.expand_dims((im_aligned - 127.5) / 127.5, axis=0),
-                                           source_z]).numpy()
+                                           source_z])
             changed_face = (changed_face_cage[0] + 1) / 2
             changed_face = np.clip(changed_face * 255, 0, 255).astype('uint8')
 
