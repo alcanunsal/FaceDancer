@@ -38,7 +38,7 @@ def swap(opt):
                                             "BboxHead": BboxHead,
                                             "LandmarkHead": LandmarkHead,
                                             "ClassHead": ClassHead})
-    ArcFace = load_model(opt.arcface_path, compile=False,)
+    ArcFace = load_model(opt.arcface_path, compile=False)
 
     G = load_model(opt.facedancer_path, compile=False, custom_objects={"AdaIN": AdaIN,
                                                         "AdaptiveAttention": AdaptiveAttention,
